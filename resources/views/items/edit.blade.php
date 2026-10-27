@@ -48,14 +48,6 @@
                     <textarea name="description" class="form-control" rows="3">{{ old('description', $item->description) }}</textarea>
                 </div>
                 <div class="col-md-2">
-                    <label class="form-label">Jumlah</label>
-                    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $item->quantity) }}" min="0">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Satuan</label>
-                    <input type="text" name="unit" class="form-control" value="{{ old('unit', $item->unit) }}">
-                </div>
-                <div class="col-md-2">
                     <label class="form-label">Kondisi</label>
                     <select name="condition" class="form-select">
                         @foreach(['Baik', 'Rusak', 'Perlu Perbaikan'] as $cond)

@@ -23,7 +23,6 @@
                     <h3 class="mb-1">Dashboard Pegawai</h3>
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ route('transactions.borrow') }}" class="btn btn-primary">Pinjam Barang</a>
                     <a href="{{ route('items.index') }}" class="btn btn-outline-light">Lihat Barang</a>
                 </div>
             </div>

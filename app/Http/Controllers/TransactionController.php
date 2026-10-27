@@ -63,7 +63,7 @@ class TransactionController extends Controller
     public function borrowForm()
     {
         return view('transactions.borrow', [
-            'items' => Item::with('location')->where('is_active', true)->where('status', 'Tersedia')->where('quantity', '>', 0)->orderBy('name')->get(),
+            'items' => Item::with('location')->where('is_active', true)->where('status', 'Tersedia')->where('quantity', '>', 0)->orderBy('name')->orderBy('id')->get(),
             'locations' => Location::where('is_active', true)->orderBy('name')->get(),
             'staff' => Staff::where('is_active', true)->orderBy('name')->get(),
         ]);
@@ -73,6 +73,8 @@ class TransactionController extends Controller
     {
         $validated = $request->validate([
             'item_id' => ['required', 'exists:items,id'],
+            'item_ids' => ['sometimes', 'array', 'min:1'],
+            'item_ids.*' => ['required', 'integer', 'exists:items,id'],
             'staff_id' => ['required', Rule::exists('staff', 'id')->where('is_active', true)],
             'to_location' => ['required', Rule::exists('locations', 'name')->where('is_active', true)],
             'purpose' => ['nullable', 'string'],
@@ -89,29 +91,89 @@ class TransactionController extends Controller
         $fullDateTime = $this->parseTransactionDateTime($validated['transaction_date'], $validated['transaction_time'] ?? null);
 
         DB::transaction(function () use ($validated, $fullDateTime) {
-            $item = Item::whereKey($validated['item_id'])->lockForUpdate()->firstOrFail();
+            $selectedItem = Item::findOrFail($validated['item_id']);
             $staff = Staff::where('is_active', true)->findOrFail($validated['staff_id']);
+            $availableItems = Item::with('location')
+                ->where('name', $selectedItem->name)
+                ->where('is_active', true)
+                ->where('status', 'Tersedia')
+                ->where('quantity', '>', 0)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get()
+                ->filter(fn (Item $item) => $item->name === $selectedItem->name)
+                ->values();
 
-            if (!$item->is_active || $item->status !== 'Tersedia' || $item->quantity < $validated['quantity']) {
+            $selectedAvailableItem = $availableItems->firstWhere('id', $selectedItem->id);
+            if (!$selectedAvailableItem) {
                 throw ValidationException::withMessages([
-                    'item_id' => 'Barang tidak tersedia atau jumlah stok tidak mencukupi.',
+                    'item_id' => 'Barang tidak tersedia. Silakan pilih barang lain.',
                 ]);
             }
 
-            Transaction::create([
-                'item_id' => $item->id,
-                'user_id' => Auth::id(),
-                'type' => 'borrow',
-                'status' => 'Menunggu Persetujuan',
-                'from_location' => $item->location?->name ?? 'Tidak diketahui',
-                'to_location' => $validated['to_location'],
-                'from_person' => 'Admin',
-                'to_person' => $staff->name,
-                'quantity' => $validated['quantity'],
-                'transaction_date' => $fullDateTime,
-                'condition' => $item->condition,
-                'notes' => !empty($validated['purpose']) ? $validated['purpose'] : ($validated['notes'] ?? null),
-            ]);
+            $selectedItems = $availableItems->keyBy('id');
+            if (isset($validated['item_ids'])) {
+                $selectedItemIds = array_map('intval', $validated['item_ids']);
+                if (count($selectedItemIds) !== $validated['quantity']) {
+                    throw ValidationException::withMessages([
+                        'quantity' => 'Jumlah pilihan kode barang harus sama dengan jumlah barang.',
+                    ]);
+                }
+                if (!in_array($selectedAvailableItem->id, $selectedItemIds, true)) {
+                    throw ValidationException::withMessages([
+                        'item_ids' => 'Kode barang yang dipilih pertama harus termasuk dalam pilihan.',
+                    ]);
+                }
+
+                $itemQuantities = array_count_values($selectedItemIds);
+                foreach ($itemQuantities as $itemId => $quantity) {
+                    $item = $selectedItems->get($itemId);
+                    if (!$item || $quantity > $item->quantity) {
+                        throw ValidationException::withMessages([
+                            'item_ids' => 'Kode barang harus tersedia, memiliki nama yang sama, dan tidak melebihi stoknya.',
+                        ]);
+                    }
+                }
+            } else {
+                if ($availableItems->sum('quantity') < $validated['quantity']) {
+                    throw ValidationException::withMessages([
+                        'quantity' => 'Jumlah yang diminta melebihi stok tersedia untuk nama barang ini.',
+                    ]);
+                }
+
+                $selectedItemIds = [];
+                $itemsToBorrow = collect([$selectedAvailableItem])
+                    ->concat($availableItems->reject(fn (Item $item) => $item->id === $selectedAvailableItem->id));
+                $remainingQuantity = $validated['quantity'];
+                foreach ($itemsToBorrow as $item) {
+                    $borrowQuantity = min($remainingQuantity, $item->quantity);
+                    for ($count = 0; $count < $borrowQuantity; $count++) {
+                        $selectedItemIds[] = $item->id;
+                    }
+                    $remainingQuantity -= $borrowQuantity;
+                    if ($remainingQuantity === 0) {
+                        break;
+                    }
+                }
+            }
+
+            foreach (array_count_values($selectedItemIds) as $itemId => $borrowQuantity) {
+                $item = $selectedItems->get($itemId) ?? $availableItems->firstWhere('id', (int) $itemId);
+                Transaction::create([
+                    'item_id' => $item->id,
+                    'user_id' => Auth::id(),
+                    'type' => 'borrow',
+                    'status' => 'Menunggu Persetujuan',
+                    'from_location' => $item->location?->name ?? 'Tidak diketahui',
+                    'to_location' => $validated['to_location'],
+                    'from_person' => 'Admin',
+                    'to_person' => $staff->name,
+                    'quantity' => $borrowQuantity,
+                    'transaction_date' => $fullDateTime,
+                    'condition' => $item->condition,
+                    'notes' => !empty($validated['purpose']) ? $validated['purpose'] : ($validated['notes'] ?? null),
+                ]);
+            }
         });
 
         return redirect()->route('transactions.index')->with('success', 'Permintaan pinjaman berhasil dikirim dan menunggu persetujuan admin.');

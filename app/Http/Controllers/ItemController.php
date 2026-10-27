@@ -137,8 +137,6 @@ class ItemController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['nullable', 'string', 'max:255'],
             'specification' => ['nullable', 'string'],
-            'quantity' => ['required', 'integer', 'min:0'],
-            'unit' => ['required', 'string', 'max:50'],
             'condition' => ['required', 'string', 'max:50'],
             'status' => ['required', 'in:Tersedia,Dipinjam,Dipindahkan,Hilang'],
             'purchase_date' => ['nullable', 'date'],

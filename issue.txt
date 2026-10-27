@@ -1,0 +1,59 @@
+Perbaikan menu gear (Pengaturan)
+
+Tujuan
+Saat tombol gear diklik, tampilkan menu di sebelah kiri tombol dengan animasi
+geser horizontal. Hapus blok identitas "Admin Inventaris" dan "Role: Admin"
+di dalam menu tersebut.
+
+Lokasi implementasi
+File: resources/views/layouts/app.blade.php
+- Tombol gear: #settingsDropdown / .settings-toggle-btn.
+- Menu: .settings-dropdown-menu.
+- Backdrop: #settingsBackdrop.
+- Bootstrap 5.3.3 sudah digunakan. Tidak perlu memasang library baru.
+
+Pekerjaan
+1. Posisikan menu di sebelah kiri gear, sejajar bagian atas tombol, dengan
+   jarak sekitar 8–12 px. Menu tidak lagi muncul di bawah tombol.
+2. Saat dibuka, menu bergeser dari arah gear ke kiri disertai perubahan
+   opacity selama sekitar 200–250 ms. Saat ditutup, animasikan kembali
+   ke arah gear sebelum menu disembunyikan.
+3. Hapus seluruh elemen li berkelas "px-3 py-2 border-bottom" yang berisi
+   auth()->user()->name dan Role di dalam menu Pengaturan.
+   Jangan hanya menghapus teks "Admin Inventaris" secara hardcode.
+4. Pertahankan judul Pengaturan, tombol Mode Gelap/Mode Terang, dan Logout.
+5. Pertahankan sapaan "Halo, ..." beserta Role pada sisi kiri topbar.
+   Identitas yang diminta dihapus hanya identitas di dalam menu gear.
+6. Menu dapat ditutup dengan klik gear kembali, klik di luar menu, dan Escape.
+   Pertahankan fungsi backdrop, pergantian tema, serta form POST logout dan CSRF.
+7. Pastikan menu tetap berada dalam layar pada perangkat kecil. Kurangi lebar
+   menu sesuai ruang yang tersedia tanpa menimbulkan scroll horizontal.
+8. Dukung mode terang dan gelap, dan nonaktifkan animasi jika pengguna
+   mengaktifkan prefers-reduced-motion.
+
+Petunjuk implementasi
+- Periksa seluruh aturan .settings-dropdown-menu dan event Bootstrap dropdown
+  di file tersebut; ada beberapa aturan CSS yang dapat saling menimpa.
+- Manfaatkan penempatan dropstart Bootstrap jika sesuai, lalu sesuaikan
+  alignment dan margin agar benar-benar berada di kiri gear.
+- Jangan menimpa transform milik Popper untuk animasi. Gunakan pembungkus
+  bagian dalam atau teknik animasi yang tidak merusak penempatan menu.
+- Bootstrap menyembunyikan menu segera ketika ditutup. Tangani lifecycle
+  hide/hidden agar animasi keluar sempat selesai, tanpa perulangan event,
+  listener menumpuk, atau menu macet saat gear diklik cepat.
+- Selaraskan status aria-expanded dan backdrop dengan kondisi menu.
+
+Kriteria penerimaan
+- Klik gear membuka menu di kiri gear dengan animasi geser horizontal.
+- Penutupan menu juga halus; tidak ada perpindahan mendadak ke bawah gear.
+- Blok nama pengguna dan Role tidak ada lagi di dalam menu Pengaturan.
+- Sapaan dan Role pada topbar tetap tersedia.
+- Pergantian tema dan logout tetap berfungsi.
+- Klik luar, Escape, dan klik gear berulang tidak membuat menu/backdrop macet.
+- Menu tidak terpotong pada layar kecil dan terbaca pada kedua tema.
+
+Validasi dan laporan
+- Jalankan pemeriksaan yang relevan dengan perubahan.
+- Jika browser tersedia, periksa posisi menu, animasi buka/tutup, klik cepat,
+  navigasi keyboard, serta tampilan desktop dan perangkat kecil.
+- Laporkan perubahan, hasil pemeriksaan, dan keterbatasan verifikasi.

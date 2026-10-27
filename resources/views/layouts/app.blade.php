@@ -397,6 +397,27 @@
             padding-left: 8px;
         }
 
+        .sidebar .nav > .collapse,
+        .sidebar .nav > .collapsing {
+            flex-shrink: 0;
+        }
+
+        .sidebar .nav > .collapsing {
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar .nav-section-title .section-chevron {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sidebar .nav > .collapsing,
+            .sidebar .nav-section-title .section-chevron {
+                transition: none;
+            }
+        }
+
         body.dark-mode .nav-section-title {
             color: #ffffff !important;
         }
@@ -500,7 +521,7 @@
         .settings-dropdown-menu {
             min-width: 230px;
             padding: 6px 0;
-            margin-top: 8px !important;
+            margin-top: 0 !important;
             border-radius: 14px;
             border: 1px solid rgba(148, 163, 184, 0.2);
             background: #ffffff;
@@ -1489,13 +1510,22 @@
         }
 
         .settings-dropdown-menu {
-            min-width: 220px;
+            min-width: 0;
+            width: auto;
+            position: static !important;
+            order: -1;
+            align-items: center;
+            gap: 4px;
             border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-            padding: 0.35rem 0;
-            margin-top: 8px !important;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+            padding: 0;
+            margin: 0 !important;
+        }
+
+        .settings-dropdown-menu.show {
+            display: flex;
         }
 
         .settings-dropdown-menu .dropdown-item {
@@ -1505,7 +1535,10 @@
             padding: 0.55rem 1rem;
             background: transparent;
             border: none;
-            width: 100%;
+            width: auto;
+            margin: 0;
+            min-height: 40px;
+            white-space: nowrap;
             text-align: left;
             transition: background 0.15s ease, color 0.15s ease;
         }
@@ -1535,9 +1568,9 @@
         }
 
         body.dark-mode .settings-dropdown-menu {
-            background: var(--card-bg);
-            border-color: var(--border);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+            background: transparent;
+            border: 0;
+            box-shadow: none;
         }
 
         body.dark-mode .settings-dropdown-menu .border-bottom {
@@ -1585,6 +1618,12 @@
             pointer-events: auto;
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            .settings-backdrop {
+                transition: none;
+            }
+        }
+
         body.dark-mode .settings-backdrop {
             background: rgba(0, 0, 0, 0.55);
             backdrop-filter: blur(5px);
@@ -1598,6 +1637,36 @@
         .topbar .dropdown {
             position: relative;
             z-index: 1046;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .topbar-greeting {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 767.98px) {
+            body.settings-open .topbar-greeting {
+                display: none;
+            }
+
+            .settings-dropdown-menu .dropdown-item {
+                padding: 0.5rem;
+            }
+
+            .topbar .dropdown,
+            .settings-dropdown-menu {
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 399.98px) {
+            .settings-dropdown-menu .dropdown-item span {
+                display: none;
+            }
         }
 
         body.settings-open .sidebar,
@@ -1685,34 +1754,26 @@
                         <button type="button" class="sidebar-toggle-btn" id="sidebarToggle" aria-label="Buka atau tutup sidebar" title="Buka/Tutup Sidebar">
                             <i class="bi bi-list fs-5" aria-hidden="true"></i>
                         </button>
-                        <div>
+                        <div class="topbar-greeting">
                             <h4 class="mb-0">Halo, {{ auth()->user()->name }}</h4>
                             <small class="text-secondary">Role: {{ ucfirst(auth()->user()->role) }}</small>
                         </div>
                     </div>
-                    <div class="dropdown">
-                        <button type="button" class="settings-toggle-btn" id="settingsDropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="Pengaturan" title="Pengaturan">
+                    <div class="dropdown dropstart">
+                        <button type="button" class="settings-toggle-btn" id="settingsDropdown" data-bs-toggle="dropdown" data-bs-display="static" data-bs-auto-close="outside" aria-expanded="false" aria-label="Pengaturan" title="Pengaturan">
                             <i class="bi bi-gear-fill fs-5" aria-hidden="true"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end settings-dropdown-menu" aria-labelledby="settingsDropdown">
-                            <li class="px-3 pt-2 pb-1 text-uppercase text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.05em;">
-                                <i class="bi bi-sliders2 me-1"></i> Pengaturan
-                            </li>
-                            <li class="px-3 py-2 border-bottom">
-                                <div class="fw-bold small text-truncate">{{ auth()->user()->name }}</div>
-                                <div class="text-muted" style="font-size: 0.75rem;">Role: {{ ucfirst(auth()->user()->role) }}</div>
-                            </li>
                             <li>
                                 <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="themeToggle">
                                     <i class="bi bi-toggle-off text-secondary" id="themeToggleIcon" aria-hidden="true"></i>
                                     <span id="themeToggleText">Mode Gelap</span>
                                 </button>
                             </li>
-                            <li><hr class="dropdown-divider my-1"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                                     @csrf
-                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger">
+                                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" aria-label="Logout" title="Logout">
                                         <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                                         <span>Logout</span>
                                     </button>
@@ -1791,6 +1852,20 @@
 
         if (settingsDropdownBtn && settingsBackdrop) {
             const dropdownEl = settingsDropdownBtn.closest('.dropdown');
+            const settingsMenu = dropdownEl.querySelector('.settings-dropdown-menu');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            let settingsAnimation = null;
+            let closingSettings = false;
+            let finishSettingsHide = false;
+            const animateSettings = (opening) => {
+                settingsAnimation?.cancel();
+                if (reducedMotion.matches) return null;
+                settingsAnimation = settingsMenu.animate([
+                    { translate: opening ? '12px 0' : '0 0', opacity: opening ? 0 : 1 },
+                    { translate: opening ? '0 0' : '12px 0', opacity: opening ? 1 : 0 },
+                ], { duration: 220, easing: 'ease-out', fill: 'both' });
+                return settingsAnimation;
+            };
 
             if (dropdownEl) {
                 dropdownEl.addEventListener('show.bs.dropdown', function () {
@@ -1798,11 +1873,34 @@
                     document.body.classList.add('settings-open');
                 });
 
-                dropdownEl.addEventListener('hide.bs.dropdown', function () {
+                dropdownEl.addEventListener('shown.bs.dropdown', function () {
+                    animateSettings(true);
+                });
+
+                dropdownEl.addEventListener('hide.bs.dropdown', function (event) {
+                    if (finishSettingsHide || reducedMotion.matches) return;
+                    event.preventDefault();
+                    if (closingSettings) return;
+                    closingSettings = true;
+                    const animation = animateSettings(false);
+                    animation.finished.then(() => {
+                        finishSettingsHide = true;
+                        bootstrap.Dropdown.getInstance(settingsDropdownBtn)?.hide();
+                        finishSettingsHide = false;
+                    }).catch(() => {
+                        closingSettings = false;
+                    });
+                });
+
+                dropdownEl.addEventListener('hidden.bs.dropdown', function () {
+                    settingsAnimation?.cancel();
+                    settingsAnimation = null;
+                    closingSettings = false;
                     settingsBackdrop.classList.remove('show');
                     document.body.classList.remove('settings-open');
                 });
             }
+
 
             settingsBackdrop.addEventListener('click', function () {
                 const dropdownInstance = bootstrap.Dropdown.getInstance(settingsDropdownBtn);

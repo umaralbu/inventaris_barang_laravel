@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Item;
+use App\Models\Category;
 use App\Models\Location;
 use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,17 +36,31 @@ class LibraryInventorySeederTest extends TestCase
 
         $this->seed(\Database\Seeders\LibraryInventorySeeder::class);
 
-        $this->assertSame(8, Location::where('is_active', true)->count());
-        $this->assertSame(110, Item::where('is_active', true)->count());
-        $this->assertSame(110, Item::where('is_active', true)->distinct('code')->count('code'));
+        $this->assertSame(7, Location::where('is_active', true)->count());
+        $this->assertSame(5, Category::count());
+        $this->assertSame(100, Item::where('is_active', true)->count());
+        $this->assertSame(100, Item::where('is_active', true)->distinct('code')->count('code'));
         $this->assertFalse($oldItem->fresh()->is_active);
         $this->assertFalse($oldLocation->fresh()->is_active);
         $this->assertDatabaseHas('transactions', ['id' => $borrow->id, 'item_id' => $oldItem->id]);
         $this->assertDatabaseHas('items', [
-            'name' => 'Kabel HDMI',
-            'unit' => 'Buah',
-            'location_id' => Location::where('name', 'Gudang')->value('id'),
+            'code' => 'INV-38390',
+            'name' => 'Mesin Laminating',
+            'category_id' => Category::where('name', 'Peralatan Kantor')->value('id'),
+            'location_id' => Location::where('name', 'Ruang Kepala Perpustakaan')->value('id'),
             'is_active' => true,
         ]);
+        $this->assertDatabaseHas('items', [
+            'code' => 'INV-72604',
+            'name' => 'Sapu Lantai',
+            'category_id' => Category::where('name', 'Peralatan Kebersihan')->value('id'),
+            'location_id' => Location::where('name', 'Ruang Baca')->value('id'),
+            'quantity' => 1,
+        ]);
+
+        $this->seed(\Database\Seeders\LibraryInventorySeeder::class);
+
+        $this->assertSame(100, Item::where('is_active', true)->count());
+        $this->assertDatabaseHas('transactions', ['id' => $borrow->id, 'item_id' => $oldItem->id]);
     }
 }

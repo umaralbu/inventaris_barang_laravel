@@ -20,9 +20,17 @@
         <div class="dashboard-hero dashboard-hero-centered card p-4 mb-4">
             <div class="w-100 text-center">
                 <div>
+<<<<<<< HEAD
                     <p class="eyebrow"><i class="bi bi-journal-bookmark-fill me-1" aria-hidden="true"></i> Perpustakaan Universitas Muhammadiyah Surakarta</p>
                     <h3 class="mb-1">Layanan Barang Perpustakaan</h3>
                     <p class="dashboard-hero-copy">Cari dan ajukan peminjaman aset untuk mendukung kegiatan layanan perpustakaan.</p>
+=======
+                    <p class="eyebrow">Selamat datang</p>
+                    <h3 class="mb-1">Dashboard Pegawai</h3>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{{ route('items.index') }}" class="btn btn-outline-light">Lihat Barang</a>
+>>>>>>> e25ccdfd4d6d1172fe50c618a8832ff52a1632fe
                 </div>
             </div>
         </div>

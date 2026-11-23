@@ -27,16 +27,23 @@ class ItemEditPageTest extends TestCase
         $this->actingAs($admin)
             ->get(route('items.edit', $item))
             ->assertOk()
+            ->assertDontSee('name="quantity"', false)
+            ->assertDontSee('name="unit"', false)
             ->assertSee('Barang Uji Edit')
             ->assertSee('Ruang Aktif')
             ->assertSee('Ruang Arsip Lama');
     }
 
+<<<<<<< HEAD
     public function test_admin_can_update_item_brand_and_view_receives_brands_by_item_name(): void
+=======
+    public function test_editing_item_preserves_quantity_and_unit(): void
+>>>>>>> e25ccdfd4d6d1172fe50c618a8832ff52a1632fe
     {
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
         $item = Item::create([
             'code' => 'INV-EDIT-2',
+<<<<<<< HEAD
             'name' => 'Mesin Penghancur Kertas',
             'brand' => 'Fellowes',
             'quantity' => 1,
@@ -78,10 +85,16 @@ class ItemEditPageTest extends TestCase
             'name' => 'Barang Rusak',
             'location_id' => $storage->id,
             'quantity' => 1,
+=======
+            'name' => 'Barang Lama',
+            'quantity' => 7,
+            'unit' => 'unit',
+>>>>>>> e25ccdfd4d6d1172fe50c618a8832ff52a1632fe
             'condition' => 'Baik',
             'status' => 'Tersedia',
         ]);
 
+<<<<<<< HEAD
         $this->actingAs($admin)->put(route('items.update', $item), [
             'name' => $item->name,
             'location_id' => $storage->id,
@@ -160,3 +173,25 @@ class ItemEditPageTest extends TestCase
         $this->assertSame($storage->id, $item->location_id);
     }
 }
+=======
+        foreach ([[], ['quantity' => 0, 'unit' => 'pcs']] as $extraFields) {
+            $this->actingAs($admin)
+                ->put(route('items.update', $item), array_merge([
+                    'name' => 'Barang Diperbarui',
+                    'condition' => 'Rusak',
+                    'status' => 'Tersedia',
+                ], $extraFields))
+                ->assertSessionHasNoErrors()
+                ->assertRedirect(route('items.index'));
+
+            $this->assertDatabaseHas('items', [
+                'id' => $item->id,
+                'name' => 'Barang Diperbarui',
+                'condition' => 'Rusak',
+                'quantity' => 7,
+                'unit' => 'unit',
+            ]);
+        }
+    }
+}
+>>>>>>> e25ccdfd4d6d1172fe50c618a8832ff52a1632fe

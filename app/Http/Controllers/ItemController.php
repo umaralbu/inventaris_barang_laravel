@@ -343,10 +343,15 @@ class ItemController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['nullable', 'string', 'max:255'],
             'specification' => ['nullable', 'string'],
+<<<<<<< HEAD
             'quantity' => ['required', 'integer', 'min:0'],
             'unit' => ['required', 'string', 'max:50'],
             'condition' => ['required', 'in:Baik,Rusak,Perlu Perbaikan'],
             'status' => ['required', 'in:Tersedia,Dipinjam,Hilang'],
+=======
+            'condition' => ['required', 'string', 'max:50'],
+            'status' => ['required', 'in:Tersedia,Dipinjam,Dipindahkan,Hilang'],
+>>>>>>> e25ccdfd4d6d1172fe50c618a8832ff52a1632fe
             'purchase_date' => ['nullable', 'date'],
             'purchase_price' => ['nullable', 'numeric'],
             'description' => ['nullable', 'string'],

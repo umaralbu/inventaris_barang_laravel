@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserGuideController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,8 +20,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/panduan', [UserGuideController::class, 'index'])->name('guide');
 
     Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/analitik', [AnalyticsController::class, 'index'])->name('admin.analytics');
         Route::resource('categories', CategoryController::class);
         Route::resource('locations', LocationController::class);
         Route::resource('staff', StaffController::class)->except('show');
@@ -28,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/items/export', [ItemController::class, 'exportCsv'])->name('items.export');
     Route::get('/items/{item}/history', [ItemController::class, 'history'])->name('items.history');
+    Route::get('/items/{item}/photo', [ItemController::class, 'photo'])->name('items.photo');
     Route::resource('items', ItemController::class);
 
     Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
@@ -38,9 +43,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/transactions/return', [TransactionController::class, 'returnStore']);
     Route::get('/transactions/transfer', [TransactionController::class, 'transferForm'])->name('transactions.transfer');
     Route::post('/transactions/transfer', [TransactionController::class, 'transferStore']);
+    Route::post('/transactions/{transaction}/report-lost', [TransactionController::class, 'reportLost'])->name('transactions.report-lost');
     Route::middleware('role:admin')->group(function () {
         Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
         Route::post('/transactions/{transaction}/reject', [TransactionController::class, 'reject'])->name('transactions.reject');
+        Route::post('/transactions/{transaction}/confirm-lost', [TransactionController::class, 'confirmLost'])->name('transactions.confirm-lost');
+        Route::post('/transactions/{transaction}/reject-lost', [TransactionController::class, 'rejectLost'])->name('transactions.reject-lost');
     });
     Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
     Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');

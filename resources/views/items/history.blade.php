@@ -25,7 +25,11 @@
                     @forelse($item->transactions()->orderByDesc('transaction_date')->get() as $transaction)
                         <tr>
                             <td class="text-nowrap">{{ $transaction->formatted_transaction_date }}</td>
-                            <td>{{ ucfirst($transaction->type) }}</td>
+                            <td>{{ match ($transaction->type) {
+                                'loss_report' => 'Laporan Kehilangan',
+                                'recovery' => 'Barang Ditemukan',
+                                default => ucfirst($transaction->type),
+                            } }}</td>
                             <td>{{ $transaction->from_location ?? $transaction->from_person ?? '-' }}</td>
                             <td>{{ $transaction->to_location ?? $transaction->to_person ?? '-' }}</td>
                             <td>{{ $transaction->user->name ?? '-' }}</td>

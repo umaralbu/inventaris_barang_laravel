@@ -18,7 +18,7 @@ class ExampleTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_topbar_contains_settings_gear_with_theme_and_logout_options(): void
+    public function test_topbar_contains_settings_gear_with_logout_option(): void
     {
         $user = \App\Models\User::factory()->create();
 
@@ -28,8 +28,11 @@ class ExampleTest extends TestCase
             ->assertSee('id="settingsDropdown"', false)
             ->assertSee('id="settingsBackdrop"', false)
             ->assertSee('bi-gear-fill')
-            ->assertSee('id="themeToggle"', false)
+            ->assertDontSee('id="themeToggle"', false)
+            ->assertDontSee('Mode Gelap')
             ->assertSee(route('logout'))
-            ->assertSee('Logout');
+            ->assertSee('Logout')
+            ->assertSee('Perpustakaan UMS')
+            ->assertSee('Layanan Barang Perpustakaan');
     }
 }

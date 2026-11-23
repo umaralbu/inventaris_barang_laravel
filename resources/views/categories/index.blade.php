@@ -24,7 +24,13 @@
     </div>
 
     <div class="card p-3">
-        <h4 class="mb-3">Daftar Kategori</h4>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="mb-0">Daftar Kategori</h4>
+            <div class="col-12 col-md-5 col-lg-4">
+                <label for="categoryListSearch" class="visually-hidden">Cari kategori</label>
+                <input type="search" id="categoryListSearch" class="form-control" placeholder="Cari nama atau deskripsi kategori..." aria-label="Cari nama atau deskripsi kategori" aria-controls="categoryList" data-list-search="categoryList" data-empty-message="categoryListSearchEmpty">
+            </div>
+        </div>
         <div class="table-wrap table-responsive">
             <table class="table">
                 <thead>
@@ -35,9 +41,9 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="categoryList">
                     @forelse($categories as $category)
-                        <tr>
+                        <tr data-search="{{ $category->name }} {{ $category->description }}">
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->description ?? '-' }}</td>
@@ -55,8 +61,13 @@
                             <td colspan="4" class="text-center text-secondary">Belum ada kategori.</td>
                         </tr>
                     @endforelse
+                    <tr id="categoryListSearchEmpty" hidden>
+                        <td colspan="4" class="text-center text-secondary" role="status">Tidak ada kategori yang cocok dengan pencarian.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script src="{{ asset('js/list-search.js') }}"></script>
 @endsection

@@ -31,6 +31,26 @@ class Item extends Model
         'is_active' => 'boolean',
     ];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Item $item) {
+            if ($item->status === 'Hilang') {
+                return;
+            }
+
+            if ($item->condition === 'Rusak') {
+                $item->location_id = Location::ensureActive('Gudang')->id;
+
+                return;
+            }
+
+            if ($item->location_id && Location::whereKey($item->location_id)->where('name', 'Gudang')->exists()) {
+                $item->location_id = Location::ensureActive('Ruang Penyimpanan')->id;
+            }
+
+        });
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -46,15 +66,29 @@ class Item extends Model
         return $this->hasMany(Transaction::class);
     }
 
-    public static function generateCode(): string
+    public static function generateCodes(int $count = 1, array $exclude = []): array
     {
+        $codes = [];
         $sequence = 1;
+        $normalizedExclude = array_map(fn($c) => mb_strtolower(trim((string)$c)), $exclude);
 
-        do {
+        while (count($codes) < $count) {
             $code = 'INV-' . str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
             $sequence++;
-        } while (self::where('code', $code)->exists());
+            $lower = mb_strtolower($code);
 
-        return $code;
+            if (in_array($lower, $normalizedExclude, true) || self::whereRaw('LOWER(code) = ?', [$lower])->exists() || in_array($code, $codes, true)) {
+                continue;
+            }
+
+            $codes[] = $code;
+        }
+
+        return $codes;
+    }
+
+    public static function generateCode(): string
+    {
+        return self::generateCodes(1)[0];
     }
 }

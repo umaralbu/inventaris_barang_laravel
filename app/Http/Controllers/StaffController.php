@@ -16,8 +16,9 @@ class StaffController extends Controller
         $staff = Staff::when($search !== '', function ($query) use ($search) {
             $query->where('name', 'like', '%' . $search . '%');
         })->orderBy('name')->get();
+        $staffNames = Staff::orderBy('name')->pluck('name');
 
-        return view('staff.index', compact('staff', 'search'));
+        return view('staff.index', compact('staff', 'staffNames', 'search'));
     }
 
     public function create()

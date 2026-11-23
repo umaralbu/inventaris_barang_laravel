@@ -5,12 +5,17 @@
 @section('content')
     <div class="card p-4">
         <h4 class="mb-3">Tambah Lokasi</h4>
-        <form action="{{ route('locations.store') }}" method="POST">
+        <form action="{{ route('locations.store') }}" method="POST" autocomplete="off">
             @csrf
-            <div class="mb-3">
-                <label class="form-label">Nama Lokasi</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
+            @include('components.name-suggestion-picker', [
+                'inputId' => 'locationName',
+                'fieldName' => 'name',
+                'label' => 'Nama Lokasi',
+                'value' => old('name', ''),
+                'placeholder' => 'Masukkan nama lokasi',
+                'searchPlaceholder' => 'Cari nama lokasi...',
+                'suggestions' => $locationNames,
+            ])
             <div class="mb-3">
                 <label class="form-label">Deskripsi</label>
                 <textarea name="description" class="form-control" rows="3"></textarea>

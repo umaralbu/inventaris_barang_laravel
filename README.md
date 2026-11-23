@@ -1,59 +1,161 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Inventaris Barang Perpustakaan
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk mengelola inventaris barang perpustakaan menggunakan Laravel 12. Sistem ini mencakup pengelolaan barang, kategori, lokasi, pegawai, pengguna, peminjaman, pengembalian, pemindahan, kerusakan, barang hilang, serta laporan analitik.
 
-## About Laravel
+## Fitur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Autentikasi pengguna dengan peran **Admin** dan **Pegawai**
+- Dashboard ringkasan inventaris
+- Manajemen data barang beserta foto dan satuan individual
+- Manajemen kategori dan lokasi penyimpanan
+- Manajemen data pegawai dan pengguna
+- Peminjaman dan pengembalian barang
+- Pemindahan barang antar lokasi atau pegawai
+- Pelaporan dan persetujuan barang hilang
+- Peringatan barang terlambat dikembalikan
+- Riwayat transaksi setiap barang
+- Analitik dan ekspor data ke CSV
+- Panduan penggunaan aplikasi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Teknologi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2 atau lebih baru
+- Laravel 12
+- MySQL atau SQLite
+- Vite
+- Tailwind CSS 4
+- Bootstrap
 
-## Learning Laravel
+Versi PHP yang digunakan pada lingkungan pengembangan saat ini: **PHP 8.5.12**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Persyaratan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- XAMPP atau lingkungan PHP/Apache yang setara
+- PHP 8.2 atau lebih baru
+- Composer
+- Node.js dan npm
+- MySQL/MariaDB atau SQLite
 
-## Laravel Sponsors
+## Instalasi dengan XAMPP
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Pindahkan atau clone proyek ke folder `C:\xampp\htdocs\Inventaris_barang_laravel22`.
 
-### Premium Partners
+2. Masuk ke folder proyek:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+   ```powershell
+   cd C:\xampp\htdocs\Inventaris_barang_laravel22
+   ```
 
-## Contributing
+3. Instal dependensi PHP dan JavaScript:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+   ```powershell
+   composer install
+   npm install
+   ```
 
-## Code of Conduct
+4. Buat file konfigurasi dan application key:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```powershell
+   copy .env.example .env
+   php artisan key:generate
+   ```
 
-## Security Vulnerabilities
+5. Konfigurasi database pada file `.env`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   Contoh untuk MySQL/XAMPP:
 
-## License
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=inventaris_barang
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   Buat database `inventaris_barang` melalui phpMyAdmin, lalu jalankan migrasi dan seeder:
+
+   ```powershell
+   php artisan migrate --seed
+   ```
+
+   Untuk SQLite, pastikan file `database/database.sqlite` sudah ada, kemudian atur `.env`:
+
+   ```env
+   DB_CONNECTION=sqlite
+   ```
+
+   ```powershell
+   New-Item -ItemType File database/database.sqlite -Force
+   php artisan migrate --seed
+   ```
+
+6. Jalankan aplikasi:
+
+   ```powershell
+   php artisan serve
+   npm run dev
+   ```
+
+7. Buka `http://127.0.0.1:8000` di browser.
+
+## Akun Demo
+
+Seeder menyediakan akun berikut:
+
+| Peran | Username | Password |
+| --- | --- | --- |
+| Admin | `admin` | `password` |
+| Pegawai | `pegawai` | `password` |
+
+Ganti password dan data demo sebelum menggunakan aplikasi di lingkungan produksi.
+
+## Perintah Penting
+
+Menjalankan migrasi:
+
+```powershell
+php artisan migrate
+```
+
+Mengisi ulang data awal dan data demo:
+
+```powershell
+php artisan db:seed
+```
+
+Menghapus seluruh tabel, migrasi ulang, lalu menjalankan seeder:
+
+```powershell
+php artisan migrate:fresh --seed
+```
+
+Perintah ini akan menghapus seluruh data database.
+
+Menjalankan pengujian:
+
+```powershell
+php artisan test
+```
+
+Menjalankan mode pengembangan Laravel, queue, log, dan Vite sekaligus:
+
+```powershell
+composer run dev
+```
+
+## Struktur Utama
+
+```text
+app/
+  Http/Controllers/    Kontroler aplikasi
+  Http/Middleware/     Middleware autentikasi dan role
+  Models/              Model kategori, barang, lokasi, pegawai, transaksi, dan pengguna
+database/
+  migrations/          Struktur tabel database
+  seeders/             Data awal dan data demo
+resources/views/       Tampilan Blade
+routes/web.php         Definisi route aplikasi
+public/                Asset publik dan logo
+tests/                 Pengujian aplikasi
+```

@@ -6,148 +6,133 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\Location;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class LibraryInventorySeeder extends Seeder
 {
     public function run(): void
     {
-        $locations = [
-            [
-                'code' => 'ADM',
-                'name' => 'Ruang Administrasi',
-                'description' => 'Ruang kerja administrasi perpustakaan.',
-                'items' => [
-                    ['Komputer Desktop', 'Unit'], ['Laptop', 'Unit'], ['Monitor', 'Unit'],
-                    ['Printer', 'Unit'], ['Scanner', 'Unit'], ['Keyboard', 'Unit'],
-                    ['Mouse', 'Unit'], ['Meja Kerja', 'Unit'], ['Kursi Kerja', 'Unit'],
-                    ['Lemari Arsip', 'Unit'], ['Telepon Kantor', 'Unit'], ['Kalkulator', 'Unit'],
-                    ['Stapler', 'Unit'], ['Mesin Penghancur Kertas', 'Unit'], ['UPS', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'STF',
-                'name' => 'Ruang Kerja Staf',
-                'description' => 'Ruang kerja staf perpustakaan.',
-                'items' => [
-                    ['Komputer Desktop', 'Unit'], ['Laptop', 'Unit'], ['Monitor', 'Unit'],
-                    ['Keyboard', 'Unit'], ['Mouse', 'Unit'], ['Meja Kerja', 'Unit'],
-                    ['Kursi Kerja', 'Unit'], ['Headset', 'Unit'], ['Lampu Meja', 'Unit'],
-                    ['Kipas Angin', 'Unit'], ['Extension Cable', 'Unit'], ['Charger Laptop', 'Unit'],
-                    ['Whiteboard', 'Unit'], ['Proyektor Mini', 'Unit'], ['Lemari Penyimpanan', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'GDG',
-                'name' => 'Gudang',
-                'description' => 'Tempat penyimpanan barang cadangan dan perlengkapan.',
-                'items' => [
-                    ['Laptop Cadangan', 'Unit'], ['Monitor Cadangan', 'Unit'], ['Keyboard', 'Unit'],
-                    ['Mouse', 'Unit'], ['Printer Cadangan', 'Unit'], ['Kabel HDMI', 'Buah'],
-                    ['Kabel LAN', 'Buah'], ['Kabel Power', 'Buah'], ['Charger Laptop', 'Unit'],
-                    ['Proyektor', 'Unit'], ['Speaker', 'Unit'], ['Stop Kontak', 'Unit'],
-                    ['Extension Cable', 'Unit'], ['Kursi Cadangan', 'Unit'], ['Meja Cadangan', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'RPT',
-                'name' => 'Ruang Rapat',
-                'description' => 'Ruang rapat dan kegiatan perpustakaan.',
-                'items' => [
-                    ['Meja Rapat', 'Unit'], ['Kursi Rapat', 'Unit'], ['Proyektor', 'Unit'],
-                    ['Layar Proyektor', 'Unit'], ['Laptop', 'Unit'], ['Speaker', 'Unit'],
-                    ['Microphone', 'Unit'], ['Remote Proyektor', 'Unit'], ['Kabel HDMI', 'Buah'],
-                    ['Whiteboard', 'Unit'], ['AC', 'Unit'], ['Extension Cable', 'Unit'],
-                    ['Webcam', 'Unit'], ['Televisi / Smart TV', 'Unit'], ['Pointer Presentasi', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'IT',
-                'name' => 'Ruang Komputer / IT',
-                'description' => 'Ruang komputer, server, dan perangkat teknologi informasi.',
-                'items' => [
-                    ['Komputer Desktop', 'Unit'], ['Monitor', 'Unit'], ['Laptop', 'Unit'],
-                    ['Keyboard', 'Unit'], ['Mouse', 'Unit'], ['Printer', 'Unit'],
-                    ['Scanner', 'Unit'], ['Router', 'Unit'], ['Switch Hub', 'Unit'],
-                    ['Access Point', 'Unit'], ['Server', 'Unit'], ['UPS', 'Unit'],
-                    ['Kabel LAN', 'Buah'], ['Hard Disk Eksternal', 'Unit'], ['Flashdisk', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'SRK',
-                'name' => 'Ruang Layanan / Sirkulasi',
-                'description' => 'Ruang layanan pemustaka dan sirkulasi koleksi.',
-                'items' => [
-                    ['Komputer Desktop', 'Unit'], ['Monitor', 'Unit'], ['Barcode Scanner', 'Unit'],
-                    ['Printer', 'Unit'], ['Scanner Dokumen', 'Unit'], ['Meja Layanan', 'Unit'],
-                    ['Kursi Petugas', 'Unit'], ['Telepon Kantor', 'Unit'], ['Mesin Absensi', 'Unit'],
-                    ['CCTV', 'Unit'], ['Rak Buku', 'Unit'], ['Troli Buku', 'Unit'],
-                    ['Label Printer', 'Unit'], ['Stempel', 'Buah'], ['Mesin Laminating', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'ARS',
-                'name' => 'Ruang Arsip',
-                'description' => 'Ruang penyimpanan arsip dan dokumen.',
-                'items' => [
-                    ['Lemari Arsip', 'Unit'], ['Rak Dokumen', 'Unit'], ['Komputer', 'Unit'],
-                    ['Scanner Dokumen', 'Unit'], ['Printer', 'Unit'], ['Mesin Penghancur Kertas', 'Unit'],
-                    ['Meja Kerja', 'Unit'], ['Kursi', 'Unit'], ['Filing Cabinet', 'Unit'], ['Brankas', 'Unit'],
-                ],
-            ],
-            [
-                'code' => 'IST',
-                'name' => 'Ruang Istirahat Staf',
-                'description' => 'Ruang istirahat staf perpustakaan.',
-                'items' => [
-                    ['Kulkas', 'Unit'], ['Dispenser', 'Unit'], ['Microwave', 'Unit'],
-                    ['Meja', 'Unit'], ['Kursi', 'Unit'], ['Kipas Angin', 'Unit'],
-                    ['Televisi', 'Unit'], ['Lemari', 'Unit'], ['Tempat Sampah', 'Unit'], ['Rak Piring', 'Unit'],
-                ],
-            ],
+        $categoryDescriptions = [
+            'Peralatan Kantor' => 'Peralatan administrasi dan operasional kantor.',
+            'Perabot' => 'Meja, kursi, dan perabot perpustakaan.',
+            'Perlengkapan Perpustakaan' => 'Perlengkapan layanan dan pengelolaan perpustakaan.',
+            'Elektronik' => 'Perangkat elektronik dan teknologi.',
+            'Peralatan Kebersihan' => 'Peralatan kebersihan ruangan.',
         ];
 
-        $legacyCodes = array_map(
-            fn (int $number) => 'INV-' . str_pad((string) $number, 4, '0', STR_PAD_LEFT),
-            range(1, 20)
-        );
+        $locationNames = [
+            'Ruang Kepala Perpustakaan',
+            'Ruang Referensi',
+            'Ruang Baca',
+            'Ruang Administrasi',
+            'Gudang',
+            'Ruang Penyimpanan',
+            'Ruang Pengolahan',
+            'Ruang Sirkulasi',
+        ];
 
-        Item::whereIn('code', $legacyCodes)->update(['is_active' => false]);
-        Location::whereIn('name', ['Ruang Admin', 'Ruang Rapat', 'Ruang IT'])
-            ->update(['is_active' => false]);
+        $items = [
+            ['INV-38390', 'Mesin Laminating', 'Fellowes', 'Peralatan Kantor', 'Ruang Kepala Perpustakaan'],
+            ['INV-20800', 'Mesin Penghancur Kertas', 'Fellowes', 'Peralatan Kantor', 'Ruang Referensi'],
+            ['INV-99107', 'Kursi Kerja', 'Chitose', 'Perabot', 'Ruang Baca'],
+            ['INV-64501', 'Lemari Arsip', 'Brother', 'Perabot', 'Ruang Administrasi'],
+            ['INV-70237', 'Kursi Kerja', 'Indachi', 'Perabot', 'Gudang'],
+            ['INV-80118', 'Rak Display Buku', 'Olympic', 'Perlengkapan Perpustakaan', 'Ruang Pengolahan'],
+            ['INV-40504', 'Troli Buku', 'Lion', 'Perlengkapan Perpustakaan', 'Ruang Sirkulasi'],
+            ['INV-46335', 'Laptop', 'ASUS', 'Elektronik', 'Ruang Referensi'],
+            ['INV-32276', 'Kalkulator', 'Casio', 'Peralatan Kantor', 'Ruang Sirkulasi'],
+            ['INV-10454', 'Vacuum Cleaner', 'Electrolux', 'Peralatan Kebersihan', 'Ruang Sirkulasi'],
+            ['INV-44786', 'Stapler', 'Max', 'Peralatan Kantor', 'Ruang Sirkulasi'],
+            ['INV-64775', 'Printer', 'Epson', 'Elektronik', 'Gudang'],
+            ['INV-94246', 'Proyektor', 'Epson', 'Elektronik', 'Ruang Pengolahan'],
+            ['INV-82863', 'Mesin Penghancur Kertas', 'GBC', 'Peralatan Kantor', 'Gudang'],
+            ['INV-77692', 'Stapler', 'Kenko', 'Peralatan Kantor', 'Ruang Administrasi'],
+            ['INV-42484', 'Komputer Desktop', 'Dell', 'Elektronik', 'Ruang Sirkulasi'],
+            ['INV-11904', 'Vacuum Cleaner', 'Philips', 'Peralatan Kebersihan', 'Ruang Baca'],
+            ['INV-43338', 'Mesin Penghancur Kertas', 'Kozure', 'Peralatan Kantor', 'Ruang Kepala Perpustakaan'],
+            ['INV-19350', 'Komputer Desktop', 'HP', 'Elektronik', 'Gudang'],
+            ['INV-26383', 'Kotak Pengembalian Buku', 'Lion Star', 'Perlengkapan Perpustakaan', 'Ruang Pengolahan'],
+            ['INV-32663', 'Rak Buku', 'Olympic', 'Perabot', 'Gudang'],
+            ['INV-96377', 'Barcode Scanner', 'Zebra', 'Perlengkapan Perpustakaan', 'Ruang Pengolahan'],
+            ['INV-54350', 'Kalkulator', 'Citizen', 'Peralatan Kantor', 'Ruang Kepala Perpustakaan'],
+            ['INV-70603', 'Troli Buku', 'Brother', 'Perlengkapan Perpustakaan', 'Ruang Baca'],
+            ['INV-83682', 'Pel Lantai', 'Vileda', 'Peralatan Kebersihan', 'Ruang Pengolahan'],
+            ['INV-72604', 'Sapu Lantai', 'Bagus', 'Peralatan Kebersihan', 'Ruang Baca'],
+            ['INV-34856', 'Pel Lantai', 'Bagus', 'Peralatan Kebersihan', 'Ruang Referensi'],
+            ['INV-29691', 'Kotak Pengembalian Buku', 'Napolly', 'Perlengkapan Perpustakaan', 'Gudang'],
+            ['INV-11586', 'Proyektor', 'BenQ', 'Elektronik', 'Ruang Kepala Perpustakaan'],
+            ['INV-38029', 'Rak Display Buku', 'Brother', 'Perlengkapan Perpustakaan', 'Ruang Kepala Perpustakaan'],
+            ['INV-12948', 'Mesin Laminating', 'GBC', 'Peralatan Kantor', 'Ruang Referensi'],
+            ['INV-87664', 'Sapu Lantai', 'Lion Star', 'Peralatan Kebersihan', 'Ruang Administrasi'],
+            ['INV-89703', 'Kotak Pengembalian Buku', 'Claris', 'Perlengkapan Perpustakaan', 'Ruang Baca'],
+            ['INV-59935', 'Tempat Sampah', 'Lion Star', 'Peralatan Kebersihan', 'Ruang Sirkulasi'],
+            ['INV-15565', 'Tempat Sampah', 'Napolly', 'Peralatan Kebersihan', 'Ruang Sirkulasi'],
+            ['INV-29820', 'Rak Buku', 'Brother', 'Perabot', 'Ruang Referensi'],
+            ['INV-46749', 'Barcode Scanner', 'Honeywell', 'Perlengkapan Perpustakaan', 'Ruang Administrasi'],
+            ['INV-74378', 'Komputer Desktop', 'Lenovo', 'Elektronik', 'Ruang Kepala Perpustakaan'],
+            ['INV-18568', 'Laptop', 'Lenovo', 'Elektronik', 'Ruang Referensi'],
+            ['INV-50359', 'Lemari Arsip', 'Alba', 'Perabot', 'Ruang Pengolahan'],
+            ['INV-71291', 'Lemari Arsip', 'Chitose', 'Perabot', 'Ruang Referensi'],
+            ['INV-25381', 'Mesin Laminating', 'Ibico', 'Peralatan Kantor', 'Ruang Baca'],
+            ['INV-80721', 'Laptop', 'HP', 'Elektronik', 'Ruang Referensi'],
+            ['INV-40469', 'Barcode Scanner', 'Datalogic', 'Perlengkapan Perpustakaan', 'Ruang Baca'],
+            ['INV-29872', 'Rak Buku', 'Lion', 'Perabot', 'Ruang Referensi'],
+            ['INV-22941', 'Meja Kerja', 'Chitose', 'Perabot', 'Ruang Pengolahan'],
+            ['INV-90274', 'Meja Kerja', 'Olympic', 'Perabot', 'Ruang Referensi'],
+            ['INV-22726', 'Pel Lantai', 'Kenmaster', 'Peralatan Kebersihan', 'Ruang Administrasi'],
+            ['INV-70371', 'Vacuum Cleaner', 'Sharp', 'Peralatan Kebersihan', 'Gudang'],
+            ['INV-90058', 'Printer', 'Canon', 'Elektronik', 'Ruang Kepala Perpustakaan'],
+        ];
 
-        $category = Category::firstOrCreate(
-            ['name' => 'Perlengkapan Perpustakaan'],
-            ['description' => 'Aset dan perlengkapan operasional perpustakaan.']
-        );
+        DB::transaction(function () use ($categoryDescriptions, $locationNames, $items): void {
+            $demoCodes = array_column($items, 0);
 
-        foreach ($locations as $locationData) {
-            $location = Location::updateOrCreate(
-                ['name' => $locationData['name']],
-                [
-                    'description' => $locationData['description'],
-                    'is_active' => true,
-                ]
-            );
-
-            foreach ($locationData['items'] as $index => [$name, $unit]) {
-                $code = sprintf('INV-%s-%03d', $locationData['code'], $index + 1);
-
-                Item::firstOrCreate(
-                    ['code' => $code],
-                    [
-                        'category_id' => $category->id,
-                        'location_id' => $location->id,
-                        'name' => $name,
-                        'quantity' => 1,
-                        'unit' => $unit,
-                        'condition' => 'Baik',
-                        'status' => 'Tersedia',
-                        'is_active' => true,
-                        'purchase_price' => 0,
-                        'description' => 'Inventaris perpustakaan di ' . $location->name,
-                    ]
-                );
+            if (Item::whereIn('code', $demoCodes)->whereHas('transactions')->exists()) {
+                throw new RuntimeException('Kode demo tidak dapat digunakan ulang karena memiliki histori transaksi.');
             }
-        }
+
+            Item::whereHas('transactions')->update(['is_active' => false]);
+            Item::whereDoesntHave('transactions')->delete();
+            Category::whereDoesntHave('items')->delete();
+            Location::whereDoesntHave('items')->delete();
+            Location::whereHas('items')->update(['is_active' => false]);
+
+            $categoryIds = [];
+            foreach ($categoryDescriptions as $name => $description) {
+                $categoryIds[$name] = Category::updateOrCreate(
+                    ['name' => $name],
+                    ['description' => $description]
+                )->id;
+            }
+
+            $locationIds = [];
+            foreach ($locationNames as $name) {
+                $locationIds[$name] = Location::updateOrCreate(
+                    ['name' => $name],
+                    [
+                        'description' => 'Lokasi inventaris demo.',
+                        'is_active' => true,
+                    ]
+                )->id;
+            }
+
+            foreach ($items as [$code, $name, $brand, $category, $location]) {
+                Item::create([
+                    'code' => $code,
+                    'name' => $name,
+                    'brand' => $brand,
+                    'category_id' => $categoryIds[$category],
+                    'location_id' => $locationIds[$location],
+                    'quantity' => 1,
+                    'unit' => 'Unit',
+                    'condition' => 'Baik',
+                    'status' => 'Tersedia',
+                    'is_active' => true,
+                    'purchase_price' => 0,
+                    'description' => 'Data demo inventaris perpustakaan.',
+                ]);
+            }
+        });
     }
 }

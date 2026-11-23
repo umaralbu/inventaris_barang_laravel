@@ -16,7 +16,9 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return view('categories.create');
+        $categoryNames = Category::orderBy('name')->pluck('name');
+
+        return view('categories.create', compact('categoryNames'));
     }
 
     public function store(Request $request)

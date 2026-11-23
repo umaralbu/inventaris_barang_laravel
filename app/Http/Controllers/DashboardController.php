@@ -17,37 +17,61 @@ class DashboardController extends Controller
         $totalBarang = Item::where('is_active', true)
             ->orWhereIn('id', $activeLoanItemIds)
             ->count();
-        $barangTersedia = Item::where('is_active', true)->where('status', 'Tersedia')->count();
+        $barangTersedia = Item::where('is_active', true)
+            ->where('status', 'Tersedia')
+            ->where('condition', '!=', 'Rusak')
+            ->count();
         $barangDipinjam = Transaction::where('type', 'borrow')
             ->where('status', 'Dipinjam')
             ->distinct('item_id')
             ->count('item_id');
-        $barangRusak = Item::where('is_active', true)->where('status', 'Rusak')->count();
+        $barangRusak = Item::where('is_active', true)->where('condition', 'Rusak')->count();
         $barangHilang = Item::where('is_active', true)->where('status', 'Hilang')->count();
-        $lowStockItems = Item::where('is_active', true)
-            ->where('status', 'Tersedia')
-            ->select('name', DB::raw('SUM(quantity) as quantity'))
-            ->groupBy('name')
-            ->havingRaw('SUM(quantity) <= 5')
-            ->orderBy('quantity', 'asc')
-            ->get();
-
         $itemsByStatus = [
-            'total' => Item::with(['category', 'location'])
+            'total' => Item::query()
                 ->where(function ($query) {
                     $query->where('is_active', true)
                         ->orWhereHas('transactions', fn ($transactionQuery) => $transactionQuery->where('type', 'borrow')->where('status', 'Dipinjam'));
                 })
+                ->select('name', 'unit', DB::raw('SUM(quantity) as quantity'))
+                ->groupBy('name', 'unit')
                 ->orderBy('name')
                 ->get(),
-            'available' => Item::where('is_active', true)->with(['category', 'location'])->where('status', 'Tersedia')->orderBy('name')->get(),
-            'borrowed' => Item::with(['category', 'location'])
+            'available' => Item::where('is_active', true)
+                ->where('status', 'Tersedia')
+                ->where('condition', '!=', 'Rusak')
+                ->select('name', 'unit', DB::raw('SUM(quantity) as quantity'))
+                ->groupBy('name', 'unit')
+                ->orderBy('name')
+                ->get(),
+            'borrowed' => Item::query()
                 ->whereHas('transactions', fn ($query) => $query->where('type', 'borrow')->where('status', 'Dipinjam'))
+                ->select('name', 'unit', DB::raw('SUM(quantity) as quantity'))
+                ->groupBy('name', 'unit')
                 ->orderBy('name')
                 ->get(),
-            'damaged' => Item::where('is_active', true)->with(['category', 'location'])->where('status', 'Rusak')->orderBy('name')->get(),
-            'lost' => Item::where('is_active', true)->with(['category', 'location'])->where('status', 'Hilang')->orderBy('name')->get(),
+            'damaged' => Item::where('is_active', true)
+                ->where('condition', 'Rusak')
+                ->select('name', 'unit', DB::raw('SUM(quantity) as quantity'))
+                ->groupBy('name', 'unit')
+                ->orderBy('name')
+                ->get(),
+            'lost' => Item::where('is_active', true)
+                ->where('status', 'Hilang')
+                ->select('name', 'unit', DB::raw('SUM(quantity) as quantity'))
+                ->groupBy('name', 'unit')
+                ->orderBy('name')
+                ->get(),
         ];
+
+        $overdueQuery = Transaction::with(['item', 'user'])->overdue();
+        if (Auth::user()->role !== 'admin') {
+            $overdueQuery->where('user_id', Auth::id());
+        }
+        $overdueTransactions = $overdueQuery
+            ->orderBy('due_date')
+            ->orderBy('due_time')
+            ->get();
 
         if (Auth::user()->role === 'admin') {
             $transactions = Transaction::with(['item', 'user'])
@@ -61,9 +85,9 @@ class DashboardController extends Controller
                 'barangDipinjam',
                 'barangRusak',
                 'barangHilang',
-                'lowStockItems',
                 'itemsByStatus',
-                'transactions'
+                'transactions',
+                'overdueTransactions'
             ));
         }
 
@@ -82,17 +106,38 @@ class DashboardController extends Controller
             ->where('status', 'Dipinjam')
             ->count();
 
+        $myBorrowedItems = Transaction::query()
+            ->join('items', 'transactions.item_id', '=', 'items.id')
+            ->where('transactions.user_id', Auth::id())
+            ->where('transactions.type', 'borrow')
+            ->select('items.name', 'items.unit', DB::raw('SUM(transactions.quantity) as quantity'))
+            ->groupBy('items.name', 'items.unit')
+            ->orderBy('items.name')
+            ->get();
+
+        $myActiveBorrowItems = Transaction::query()
+            ->join('items', 'transactions.item_id', '=', 'items.id')
+            ->where('transactions.user_id', Auth::id())
+            ->where('transactions.type', 'borrow')
+            ->where('transactions.status', 'Dipinjam')
+            ->select('items.name', 'items.unit', DB::raw('SUM(transactions.quantity) as quantity'))
+            ->groupBy('items.name', 'items.unit')
+            ->orderBy('items.name')
+            ->get();
+
         return view('dashboard.index', compact(
             'totalBarang',
             'barangTersedia',
             'barangDipinjam',
             'barangRusak',
             'barangHilang',
-            'lowStockItems',
             'itemsByStatus',
             'transactions',
             'myBorrowed',
-            'myActiveBorrow'
+            'myActiveBorrow',
+            'myBorrowedItems',
+            'myActiveBorrowItems',
+            'overdueTransactions'
         ));
     }
 }

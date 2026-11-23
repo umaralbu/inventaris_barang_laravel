@@ -33,7 +33,7 @@ class TransactionAdminActionTest extends TestCase
             ->assertSee('Ambil Barang')
             ->assertSee('Kembalikan Barang')
             ->assertSee('Ekspor CSV')
-            ->assertSee('Pindahkan Barang');
+            ->assertDontSee('Pindahkan Barang');
     }
 
     public function test_transaction_menu_shows_item_code_column(): void
@@ -42,7 +42,7 @@ class TransactionAdminActionTest extends TestCase
         $item = \App\Models\Item::create([
             'code' => 'BRG-999',
             'name' => 'Buku Ensiklopedia',
-            'quantity' => 10,
+            'quantity' => 1,
             'status' => 'Tersedia',
         ]);
         \App\Models\Transaction::create([
@@ -63,5 +63,31 @@ class TransactionAdminActionTest extends TestCase
             ->assertSee('<th>Kode Barang</th>', false)
             ->assertSee('Buku Ensiklopedia')
             ->assertSee('BRG-999');
+    }
+
+    public function test_transaction_item_name_shows_brand_below_it(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $item = \App\Models\Item::create([
+            'code' => 'BRG-BRAND-01',
+            'name' => 'Komputer Desktop',
+            'brand' => 'Dell',
+            'quantity' => 1,
+            'status' => 'Tersedia',
+        ]);
+        \App\Models\Transaction::create([
+            'item_id' => $item->id,
+            'user_id' => $user->id,
+            'type' => 'borrow',
+            'status' => 'Dipinjam',
+            'quantity' => 1,
+            'transaction_date' => now(),
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('transactions.index'))
+            ->assertOk()
+            ->assertSee('<div>Komputer Desktop</div>', false)
+            ->assertSee('<small class="text-secondary opacity-75">Dell</small>', false);
     }
 }

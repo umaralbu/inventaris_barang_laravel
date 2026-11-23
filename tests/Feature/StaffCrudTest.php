@@ -23,7 +23,9 @@ class StaffCrudTest extends TestCase
             ->get(route('staff.index', ['search' => 'Santoso']))
             ->assertOk()
             ->assertSee('Budi Santoso')
-            ->assertDontSee('Siti Aminah');
+            ->assertDontSee('<td>Siti Aminah</td>', false)
+            ->assertSee('role="listbox" aria-label="Saran staf"', false)
+            ->assertSee('data-value="Siti Aminah" data-search="Siti Aminah"', false);
 
         $this->get(route('staff.index', ['search' => 'Tidak dikenal']))
             ->assertOk()

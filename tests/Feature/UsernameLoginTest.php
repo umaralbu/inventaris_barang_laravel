@@ -50,7 +50,10 @@ class UsernameLoginTest extends TestCase
             ->assertSee('name="username"', false)
             ->assertSee('Username')
             ->assertDontSee('name="email"', false)
-            ->assertSee('data-username="admin"', false)
-            ->assertSee('data-username="pegawai"', false);
+            ->assertDontSee('data-username=', false)
+            ->assertDontSee('data-password=', false)
+            ->assertDontSee('value="admin"', false)
+            ->assertDontSee('value="password"', false)
+            ->assertDontSee('role-switch', false);
     }
 }

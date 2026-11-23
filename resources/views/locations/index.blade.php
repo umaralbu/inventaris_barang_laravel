@@ -24,7 +24,13 @@
     </div>
 
     <div class="card p-3">
-        <h4 class="mb-3">Daftar Lokasi</h4>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h4 class="mb-0">Daftar Lokasi</h4>
+            <div class="col-12 col-md-5 col-lg-4">
+                <label for="locationListSearch" class="visually-hidden">Cari lokasi</label>
+                <input type="search" id="locationListSearch" class="form-control" placeholder="Cari nama atau deskripsi lokasi..." aria-label="Cari nama atau deskripsi lokasi" aria-controls="locationList" data-list-search="locationList" data-empty-message="locationListSearchEmpty">
+            </div>
+        </div>
         <div class="table-wrap table-responsive">
             <table class="table">
                 <thead>
@@ -36,9 +42,9 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="locationList">
                     @forelse($locations as $location)
-                        <tr>
+                        <tr data-search="{{ $location->name }} {{ $location->description }}">
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $location->name }}</td>
                             <td>{{ $location->description ?? '-' }}</td>
@@ -59,8 +65,13 @@
                             <td colspan="5" class="text-center text-secondary">Belum ada lokasi.</td>
                         </tr>
                     @endforelse
+                    <tr id="locationListSearchEmpty" hidden>
+                        <td colspan="5" class="text-center text-secondary" role="status">Tidak ada lokasi yang cocok dengan pencarian.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script src="{{ asset('js/list-search.js') }}"></script>
 @endsection

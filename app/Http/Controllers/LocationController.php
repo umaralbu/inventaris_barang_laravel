@@ -16,7 +16,9 @@ class LocationController extends Controller
 
     public function create()
     {
-        return view('locations.create');
+        $locationNames = Location::orderBy('name')->pluck('name');
+
+        return view('locations.create', compact('locationNames'));
     }
 
     public function store(Request $request)

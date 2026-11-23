@@ -40,6 +40,76 @@ class ItemUnitCodesTest extends TestCase
         $this->assertDatabaseCount('items', 1);
     }
 
+    public function test_multiple_item_rows_save_each_item_with_its_own_codes_and_details(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => User::ROLE_ADMIN]));
+        $this->post(route('items.store'), [
+            'items' => [
+                [
+                    'name' => 'Sapu',
+                    'brand' => 'CleanCo',
+                    'quantity' => 2,
+                    'codes' => ['MULTI-SAPU-01', 'MULTI-SAPU-02'],
+                    'unit' => 'pcs',
+                    'condition' => 'Baik',
+                    'status' => 'Tersedia',
+                    'specification' => 'Gagang panjang',
+                ],
+                [
+                    'name' => 'Ember',
+                    'brand' => 'Plastik Jaya',
+                    'quantity' => 1,
+                    'codes' => ['MULTI-EMBER-01'],
+                    'unit' => 'unit',
+                    'condition' => 'Baik',
+                    'status' => 'Tersedia',
+                    'description' => 'Untuk kebersihan',
+                ],
+            ],
+        ])->assertSessionHasNoErrors()->assertRedirect(route('items.index'));
+
+        $this->assertDatabaseCount('items', 3);
+        $this->assertDatabaseHas('items', [
+            'code' => 'MULTI-SAPU-02',
+            'name' => 'Sapu',
+            'brand' => 'CleanCo',
+            'quantity' => 1,
+            'specification' => 'Gagang panjang',
+        ]);
+        $this->assertDatabaseHas('items', [
+            'code' => 'MULTI-EMBER-01',
+            'name' => 'Ember',
+            'brand' => 'Plastik Jaya',
+            'quantity' => 1,
+            'description' => 'Untuk kebersihan',
+        ]);
+    }
+
+    public function test_multiple_item_rows_reject_duplicate_codes_without_saving_any_items(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => User::ROLE_ADMIN]));
+        $this->post(route('items.store'), [
+            'items' => [
+                ['name' => 'Sapu', 'quantity' => 1, 'codes' => ['DUP-CODE'], 'unit' => 'pcs', 'condition' => 'Baik', 'status' => 'Tersedia'],
+                ['name' => 'Ember', 'quantity' => 1, 'codes' => ['dup-code'], 'unit' => 'pcs', 'condition' => 'Baik', 'status' => 'Tersedia'],
+            ],
+        ])->assertSessionHasErrors('items.1.codes.0');
+
+        $this->assertDatabaseCount('items', 0);
+    }
+
+    public function test_multiple_item_rows_require_one_inventory_code_per_unit(): void
+    {
+        $this->actingAs(User::factory()->create(['role' => User::ROLE_ADMIN]));
+        $this->post(route('items.store'), [
+            'items' => [
+                ['name' => 'Sapu', 'quantity' => 2, 'codes' => ['ONLY-ONE'], 'unit' => 'pcs', 'condition' => 'Baik', 'status' => 'Tersedia'],
+            ],
+        ])->assertSessionHasErrors('items.0.codes');
+
+        $this->assertDatabaseCount('items', 0);
+    }
+
     private function payload(): array
     {
         return [

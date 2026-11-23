@@ -134,30 +134,6 @@
             line-height: 1.5;
         }
 
-        .role-switch {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .role-btn {
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            background: rgba(148, 163, 184, 0.08);
-            color: rgba(237, 242, 247, 0.9);
-            border-radius: 12px;
-            padding: 0.75rem 0.9rem;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-
-        .role-btn.is-active {
-            background: linear-gradient(135deg, rgba(217, 196, 161, 0.9), rgba(183, 165, 138, 0.9));
-            color: #201d1a;
-            border-color: rgba(217, 196, 161, 0.95);
-            box-shadow: 0 12px 20px rgba(183, 165, 138, 0.25);
-        }
-
         form {
             margin-top: 6px;
         }
@@ -302,21 +278,6 @@
 
         .subtitle {
             color: #6c757d;
-        }
-
-        .role-btn {
-            background: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            color: #212529;
-            transition: none;
-        }
-
-        .role-btn.is-active {
-            background: #0d6efd;
-            border-color: #0d6efd;
-            box-shadow: none;
-            color: #ffffff;
         }
 
         .form-label {
@@ -474,61 +435,677 @@
                 border-top: 1px solid #dee2e6;
             }
         }
+
+        .login-shell {
+            background: linear-gradient(145deg, #edf4f3, #f8faf9 56%, #f5edef);
+        }
+
+        .login-panel {
+            width: min(1120px, 100%);
+            min-height: 620px;
+            border-radius: 10px;
+            border-color: rgba(20, 66, 75, 0.16);
+            box-shadow: 0 24px 64px rgba(24, 57, 65, 0.13);
+        }
+
+        .login-brand-panel {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(125deg, #123f54 0%, #116a70 72%, #a83e4d 100%);
+            border: 0;
+            padding: 42px;
+        }
+
+        .login-brand-panel::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: repeating-linear-gradient(135deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 18px);
+        }
+
+        .login-brand-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-top {
+            gap: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .brand-top-copy {
+            display: grid;
+            gap: 3px;
+        }
+
+        .brand-top-copy strong {
+            font-size: 1.05rem;
+            line-height: 1.1;
+        }
+
+        .brand-top-copy small {
+            max-width: 250px;
+            color: rgba(255, 255, 255, 0.74);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            line-height: 1.35;
+            text-transform: uppercase;
+        }
+
+        .brand-top .brand-mark,
+        .login-head .brand-mark {
+            flex: 0 0 42px;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            box-shadow: none;
+            color: #ffffff;
+        }
+
+        .brand-copy .eyebrow {
+            color: rgba(255, 255, 255, 0.76);
+            letter-spacing: 0.08em;
+        }
+
+        .brand-copy h1 {
+            max-width: 490px;
+            color: #ffffff;
+            font-size: clamp(2.4rem, 4vw, 3.8rem);
+            line-height: 1.02;
+            letter-spacing: 0;
+        }
+
+        .brand-description {
+            max-width: 400px;
+            margin: 1.1rem 0 0;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.6;
+        }
+
+        .login-card {
+            background: #ffffff;
+        }
+
+        .login-card h3 {
+            color: #17343c;
+            font-size: 1.8rem;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 900;
+        }
+
+        .login-card .subtitle {
+            color: #647a80;
+        }
+
+        .form-check-input:checked,
+        .form-check-input:hover,
+        .form-check-input:focus {
+            border-color: #303684 !important;
+        }
+
+        .form-check-input:checked {
+            background-color: #303684 !important;
+        }
+
+        .form-control:focus {
+            border-color: #0e6670;
+            box-shadow: 0 0 0 0.2rem rgba(14, 102, 112, 0.14);
+        }
+
+        .btn-submit,
+        .btn-submit:hover {
+            background: #0e6670;
+            border-color: #0e6670;
+        }
+
+        body.dark-mode .login-card {
+            background: #19333c;
+            border-color: rgba(184, 213, 214, 0.16);
+        }
+
+        body.dark-mode .login-card h3,
+        body.dark-mode .login-card .subtitle,
+        body.dark-mode .login-card .form-label,
+        body.dark-mode .login-card .form-check-label {
+            color: #edf5f4 !important;
+        }
+
+        @media (max-width: 920px) {
+            .login-brand-panel {
+                min-height: 260px;
+                padding: 30px;
+            }
+
+            .brand-copy {
+                min-height: 150px;
+            }
+
+            .brand-copy h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .login-shell {
+                padding: 12px;
+            }
+
+            .login-brand-panel {
+                min-height: 230px;
+                padding: 22px;
+            }
+
+            .brand-copy h1 {
+                font-size: 2rem;
+                font-family: "Montserrat", sans-serif;
+                font-weight: 900;
+            }
+
+            .login-card {
+                padding: 28px 20px;
+            }
+        }
+
+        .login-shell {
+            min-height: 100vh;
+            padding: 0;
+            align-items: stretch;
+            justify-content: stretch;
+            background: #ffffff;
+        }
+
+        .login-panel {
+            width: 100%;
+            min-height: 100vh;
+            grid-template-columns: minmax(0, 1.03fr) minmax(420px, 0.97fr);
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .login-brand-panel {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            min-height: 100vh;
+            padding: clamp(32px, 5vw, 72px);
+            border: 0;
+            background-color: #252a68;
+            background-image:
+                url("{{ asset('login-gradient-waves.svg') }}?v=2"),
+                radial-gradient(ellipse at 18% 18%, rgba(105, 117, 230, 0.42), transparent 38%),
+                radial-gradient(ellipse at 78% 78%, rgba(38, 161, 181, 0.18), transparent 34%),
+                linear-gradient(138deg, #252a68 0%, #303684 48%, #3b4399 100%);
+            background-size: 100% 100%, cover, cover, cover;
+            color: #ffffff;
+        }
+
+        .login-brand-panel::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background-color: rgba(177, 182, 232, 0.1);
+            -webkit-mask: url("{{ asset('geometric-pattern.svg') }}") 0 0 / 64px 56px repeat;
+            mask: url("{{ asset('geometric-pattern.svg') }}") 0 0 / 64px 56px repeat;
+        }
+
+        .login-brand-panel::after {
+            content: none;
+        }
+
+        .brand-top {
+            justify-content: flex-start;
+            gap: 0;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .ums-wordmark {
+            display: block;
+            width: min(380px, 100%);
+            padding: 10px 14px;
+            border: 1px solid rgba(48, 54, 132, 0.08);
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 12px 30px rgba(17, 22, 75, 0.16);
+        }
+
+        .ums-wordmark img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .brand-copy {
+            min-height: 0;
+            margin: auto 0;
+            padding: 48px 0;
+            justify-content: center;
+        }
+
+        .brand-copy .eyebrow {
+            margin-bottom: 14px;
+            color: #f5c400;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .brand-copy h1 {
+            max-width: 540px;
+            color: #ffffff;
+            font-family: "Montserrat", sans-serif;
+            font-size: clamp(2.5rem, 4vw, 3.9rem);
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1.08;
+        }
+
+        .title-dot {
+            color: #f5c400;
+        }
+
+        .brand-description {
+            max-width: 500px;
+            margin: 20px 0 0;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: "Poppins", sans-serif;
+            font-size: 0.94rem;
+            font-weight: 500;
+            line-height: 1.65;
+        }
+
+        .login-brand-footer {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .login-library-logo {
+            display: block;
+            width: min(132px, 36vw);
+            height: auto;
+            margin: 8px auto 0;
+        }
+
+        .login-card {
+            position: relative;
+            overflow: hidden;
+            align-items: center;
+            width: auto;
+            min-width: 0;
+            padding: 56px clamp(28px, 7vw, 96px);
+            background:
+                radial-gradient(ellipse at 14% 12%, rgba(213, 218, 255, 0.72), transparent 38%),
+                linear-gradient(112deg, #bac2eb 0%, #e0e4fa 22%, #f0f1ff 48%, #ffffff 100%);
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .login-card-inner {
+            position: relative;
+            z-index: 1;
+            width: min(100%, 400px);
+            padding: 0;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-color: rgba(110, 142, 163, 0.14);
+            -webkit-mask: url("{{ asset('geometric-pattern.svg') }}") 0 0 / 64px 56px repeat;
+            mask: url("{{ asset('geometric-pattern.svg') }}") 0 0 / 64px 56px repeat;
+        }
+
+        .login-head {
+            display: none;
+        }
+
+        .login-card h3 {
+            position: relative;
+            margin: 0 0 24px;
+            padding-bottom: 15px;
+            color: #303684;
+            font-family: "Montserrat", sans-serif;
+            font-size: 1.65rem;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-align: center;
+        }
+
+        .login-card h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 48px;
+            height: 4px;
+            border-radius: 99px;
+            background: #f5c400;
+            transform: translateX(-50%);
+        }
+
+        .login-card .subtitle {
+            margin: -10px 0 24px;
+            color: #59617b;
+            font-size: 0.83rem;
+            line-height: 1.65;
+            text-align: center;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            margin-bottom: 7px;
+            color: #303684;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .form-control {
+            min-height: 44px;
+            padding: 0.65rem 2.8rem 0.65rem 0.85rem;
+            border: 1px solid #d5d9e7;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #283044;
+            font-size: 0.86rem;
+        }
+
+        .form-control:focus {
+            border-color: #5057a6;
+            box-shadow: 0 0 0 0.2rem rgba(48, 54, 132, 0.12);
+            color: #283044;
+        }
+
+        .form-check {
+            margin: 4px 0 20px;
+        }
+
+        .login-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 4px 0 20px;
+        }
+
+        .login-options .form-check {
+            margin: 0;
+        }
+
+        .forgot-password {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: #303684;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .forgot-password:hover,
+        .forgot-password:focus-visible {
+            color: #242a70;
+            text-decoration: underline;
+        }
+
+        .login-help {
+            margin: -8px 0 16px;
+            color: #59617b;
+            font-size: 0.76rem;
+            line-height: 1.5;
+        }
+
+        .form-check-label {
+            color: #59617b;
+            font-size: 0.78rem;
+        }
+
+        .form-check-input:checked {
+            border-color: #303684 !important;
+            background-color: #303684 !important;
+        }
+
+        .password-toggle {
+            color: #69718a;
+        }
+
+        .btn-submit,
+        .btn-submit:hover {
+            min-height: 46px;
+            border: 0;
+            border-bottom: 3px solid #f5c400;
+            border-radius: 10px;
+            background: #303684;
+            box-shadow: none;
+            color: #ffffff;
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-submit:hover {
+            background: #272d78;
+        }
+
+        .login-copyright {
+            margin: 24px 0 0;
+            color: #69718a;
+            font-size: 0.68rem;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        body.dark-mode .login-card {
+            background: #ffffff;
+        }
+
+        body.dark-mode .login-card h3,
+        body.dark-mode .login-card .subtitle,
+        body.dark-mode .login-card .form-label,
+        body.dark-mode .login-card .form-check-label,
+        body.dark-mode .login-copyright {
+            color: #303684 !important;
+        }
+
+        body.dark-mode .login-card .form-control {
+            background: #ffffff;
+            border-color: #d5d9e7;
+            color: #283044;
+            -webkit-text-fill-color: #283044;
+        }
+
+        .login-card::after {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            inset: 0 auto 0 0;
+            width: clamp(260px, 38vw, 540px);
+            pointer-events: none;
+            background: linear-gradient(
+                90deg,
+                rgba(48, 54, 132, 0.38) 0%,
+                rgba(58, 65, 155, 0.3) 24%,
+                rgba(93, 101, 178, 0.18) 52%,
+                rgba(145, 150, 203, 0.06) 80%,
+                rgba(48, 54, 132, 0) 100%
+            );
+        }
+
+        @media (max-width: 920px) {
+            .login-shell {
+                align-items: flex-start;
+            }
+
+            .login-panel {
+                grid-template-columns: minmax(0, 1fr);
+                min-height: 100vh;
+            }
+
+            .login-brand-panel {
+                min-height: 300px;
+                padding: 28px clamp(22px, 6vw, 42px);
+            }
+
+            .brand-copy {
+                min-height: 150px;
+                margin: 28px 0 12px;
+                padding: 0;
+                flex-shrink: 0;
+            }
+
+            .brand-copy > * {
+                flex-shrink: 0;
+            }
+
+            .brand-copy h1 {
+                font-size: clamp(2rem, 7vw, 3rem);
+            }
+
+            .brand-description {
+                margin-top: 12px;
+                font-size: 0.84rem;
+            }
+
+            .login-card {
+                padding: 42px 24px 48px;
+            }
+
+            .login-card::after {
+                inset: 0 0 auto;
+                width: auto;
+                height: 210px;
+                background: linear-gradient(
+                    180deg,
+                    rgba(48, 54, 132, 0.38) 0%,
+                    rgba(58, 65, 155, 0.3) 24%,
+                    rgba(93, 101, 178, 0.18) 52%,
+                    rgba(145, 150, 203, 0.06) 80%,
+                    rgba(48, 54, 132, 0) 100%
+                );
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .login-brand-panel {
+                min-height: 270px;
+                padding: 22px;
+            }
+
+            .ums-wordmark {
+                width: min(320px, 100%);
+            }
+
+            .ums-wordmark img {
+                width: 100%;
+            }
+
+            .brand-copy {
+                margin-top: 22px;
+            }
+
+            .brand-copy .eyebrow {
+                margin-bottom: 9px;
+                font-size: 0.67rem;
+            }
+
+            .brand-copy h1 {
+                font-size: 2rem;
+            }
+
+            .brand-description {
+                max-width: 360px;
+                font-size: 0.76rem;
+            }
+
+            .login-card {
+                padding: 34px 22px 42px;
+            }
+
+            .login-card h3 {
+                font-size: 1.45rem;
+            }
+        }
     </style>
 
     <div class="login-shell">
         <div class="login-panel">
             <aside class="login-brand-panel">
                 <div class="brand-top">
-                    <span class="brand-mark">I</span>
-                    <span>Inventaris</span>
+                    <span class="ums-wordmark">
+                        <img src="{{ asset('ums-logo-color.webp') }}" alt="Universitas Muhammadiyah Surakarta">
+                    </span>
                 </div>
 
                 <div class="brand-copy">
-                    <p class="eyebrow">Sistem inventaris</p>
-                    <h1>Kelola barang<br>lebih rapi.</h1>
+                    <p class="eyebrow">Sistem inventaris perpustakaan</p>
+                    <h1>Inventaris<br>Perpustakaan<span class="title-dot">.</span></h1>
+                    <p class="brand-description">Kelola aset ruang baca, referensi, sirkulasi, pengolahan, dan ruang pendukung dalam satu sistem.</p>
+                </div>
+
+                <div class="login-brand-footer">
+                    <span>Universitas Muhammadiyah Surakarta</span>
                 </div>
             </aside>
 
             <section class="login-card">
                 <div class="login-card-inner">
                     <div class="login-head">
-                        <div class="brand-mark">I</div>
+                        <div class="brand-mark">UMS</div>
                     </div>
 
-                    <h3>Login Inventaris</h3>
-                    <p class="subtitle">Masuk untuk mengelola data barang dan transaksi.</p>
-
-                    <div class="role-switch" aria-label="Pilih role login">
-                        <button type="button" class="role-btn is-active" data-username="admin" data-password="password">Admin</button>
-                        <button type="button" class="role-btn" data-username="pegawai" data-password="password">User</button>
-                    </div>
+                    <h3>Masuk ke sistem</h3>
+                    <p class="subtitle">Portal inventaris Perpustakaan UMS. Masuk dengan akun yang terdaftar.</p>
 
                     <form method="POST" action="{{ url('/login') }}">
                         @csrf
 
                         <div class="field">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" name="username" id="username" class="form-control" value="{{ old('username', 'admin') }}" autocomplete="username" required>
+                            <input type="text" name="username" id="username" class="form-control" value="{{ old('username') }}" autocomplete="username" required>
                         </div>
 
                         <div class="field">
                             <label for="password" class="form-label">Password</label>
                             <div class="password-wrap">
-                                <input type="password" name="password" id="password" class="form-control" value="password" required>
+                                <input type="password" name="password" id="password" class="form-control" autocomplete="current-password" required>
                                 <button type="button" class="password-toggle" id="passwordToggle" aria-label="Lihat password" aria-pressed="false">
                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                            <label class="form-check-label" for="remember">Ingat saya</label>
+                        <div class="login-options">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                                <label class="form-check-label" for="remember">Ingat saya</label>
+                            </div>
+                            <button type="button" class="forgot-password" id="forgotPasswordButton" aria-controls="loginHelp" aria-expanded="false">Lupa password?</button>
                         </div>
+                        <p class="login-help" id="loginHelp" hidden>Fitur reset mandiri belum tersedia. Hubungi administrator Perpustakaan UMS untuk bantuan akun.</p>
 
                         <button type="submit" class="btn-submit">Masuk</button>
                     </form>
+
+                    <img class="login-library-logo" src="{{ asset('ums-library-logo.png') }}" alt="Logo UMS Library">
+                    <p class="login-copyright">&copy; Perpustakaan Universitas Muhammadiyah Surakarta</p>
                 </div>
             </section>
         </div>
@@ -536,22 +1113,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const roleButtons = document.querySelectorAll('.role-btn');
-            const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
             const passwordToggle = document.getElementById('passwordToggle');
-
-            roleButtons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    roleButtons.forEach(function (item) {
-                        item.classList.toggle('is-active', item === button);
-                    });
-
-                    usernameInput.value = button.dataset.username || '';
-                    passwordInput.value = button.dataset.password || '';
-                    passwordInput.focus();
-                });
-            });
+            const forgotPasswordButton = document.getElementById('forgotPasswordButton');
+            const loginHelp = document.getElementById('loginHelp');
 
             if (passwordToggle && passwordInput) {
                 passwordToggle.addEventListener('click', function () {
@@ -560,6 +1125,14 @@
                     passwordToggle.innerHTML = `<i class="bi ${isPassword ? 'bi-eye-slash' : 'bi-eye'}" aria-hidden="true"></i>`;
                     passwordToggle.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Lihat password');
                     passwordToggle.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+                });
+            }
+
+            if (forgotPasswordButton && loginHelp) {
+                forgotPasswordButton.addEventListener('click', function () {
+                    const isExpanded = forgotPasswordButton.getAttribute('aria-expanded') === 'true';
+                    forgotPasswordButton.setAttribute('aria-expanded', String(!isExpanded));
+                    loginHelp.hidden = isExpanded;
                 });
             }
         });

@@ -20,6 +20,20 @@ class Location extends Model
         ];
     }
 
+    public static function ensureActive(string $name): self
+    {
+        $location = self::firstOrCreate(
+            ['name' => $name],
+            ['description' => 'Lokasi inventaris.', 'is_active' => true]
+        );
+
+        if (!$location->is_active) {
+            $location->update(['is_active' => true]);
+        }
+
+        return $location;
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
